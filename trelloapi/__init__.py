@@ -34,16 +34,17 @@ class Trello(ApiBase):
 
     def add_board_id(self, board_id):
         """Add a new Board ID to the list."""
-        if len(self.board_ids) == 0:
-            self.board_ids.append(board_id)
-        else:
-            if board_id not in self.board_ids:
+        if self.has_board(board_id):
+            if len(self.board_ids) == 0:
                 self.board_ids.append(board_id)
+            else:
+                if board_id not in self.board_ids:
+                    self.board_ids.append(board_id)
         return self.board_ids
 
     def board_by_id(self, board_id):
         """Get a new instance of a board by ID."""
-        return Board(self, board_id)
+        return Board(self, board_id) if self.has_board(board_id) else None
 
     def auto_load(self):
         """Load all user data."""
@@ -64,6 +65,13 @@ class Trello(ApiBase):
                 "username": None,
             }
         return self.user
+
+    def has_board(self, board_id):
+        """Check if the board exists for user."""
+        url = f"https://api.trello.com/1/boards/{board_id}"
+        response = trello_requests.get_request(self, url)
+
+        return response["status"] == 200
 
     def __str__(self):
         """Print current User by name."""
