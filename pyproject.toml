@@ -22,10 +22,13 @@ version = "0.0.1"
 authors = [
   { name="Jordy Araújo", email="jordyaraujo@outlook.com" },
 ]
-description = "Python wrapper for Trello API "
+description = "Object oriented Python wrapper for Trello API"
 readme = "README.md"
 license = { file="LICENSE" }
 requires-python = ">=3.7"
+dependencies = [
+  "httpx==0.23.0"
+]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",

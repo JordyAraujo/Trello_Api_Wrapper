@@ -3,3 +3,5 @@
 disable=unused-argument,import-error
 
 init-hook='import sys; sys.path.append(".venv")'
+
+good-names=id
