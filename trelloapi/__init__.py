@@ -14,37 +14,6 @@ class Trello:
         self.board_ids = []
         self.fetch_board_ids()
 
-    def fetch_board_ids(self):
-        """Requests all Board IDs the current user has from Trello API."""
-        url = "https://api.trello.com/1/members/me/boards"
-        response = trello_requests.get_request(self, url)
-
-        if response["status"] == 200:
-            for board in response["data"]:
-                self.add_board_id(board["id"])
-        else:
-            self.board_ids = []
-
-        return {
-            "status": response["status"],
-            "url": url,
-            "data": self.board_ids,
-        }
-
-    def add_board_id(self, board_id):
-        """Add a new Board ID to the list."""
-        if self.has_board(board_id):
-            if len(self.board_ids) == 0:
-                self.board_ids.append(board_id)
-            else:
-                if board_id not in self.board_ids:
-                    self.board_ids.append(board_id)
-        return self.board_ids
-
-    def board_by_id(self, board_id):
-        """Get a new instance of a board by ID."""
-        return Board(self, board_id) if self.has_board(board_id) else None
-
     def auto_load(self):
         """Load all user data."""
         url = "https://api.trello.com/1/members/me"
@@ -69,8 +38,38 @@ class Trello:
         """Check if the board exists for user."""
         url = f"https://api.trello.com/1/boards/{board_id}"
         response = trello_requests.get_request(self, url)
-
         return response["status"] == 200
+
+    def add_board_id(self, board_id):
+        """Add a new Board ID to the list."""
+        if self.has_board(board_id):
+            if len(self.board_ids) == 0:
+                self.board_ids.append(board_id)
+            else:
+                if board_id not in self.board_ids:
+                    self.board_ids.append(board_id)
+        return self.board_ids
+
+    def fetch_board_ids(self):
+        """Requests all Board IDs the current user has from Trello API."""
+        url = "https://api.trello.com/1/members/me/boards"
+        response = trello_requests.get_request(self, url)
+
+        if response["status"] == 200:
+            for board in response["data"]:
+                self.add_board_id(board["id"])
+        else:
+            self.board_ids = []
+
+        return {
+            "status": response["status"],
+            "url": url,
+            "data": self.board_ids,
+        }
+
+    def board_by_id(self, board_id):
+        """Get a new instance of a board by ID."""
+        return Board(self, board_id) if self.has_board(board_id) else None
 
     def __str__(self):
         """Print current User by name."""
