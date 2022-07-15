@@ -35,7 +35,7 @@ class Trello:
         return self.user
 
     def has_board(self, board_id):
-        """Check if the board exists for user."""
+        """Check if the Board exists for user."""
         url = f"https://api.trello.com/1/boards/{board_id}"
         response = trello_requests.get_request(self, url)
         return response["status"] == 200
@@ -54,13 +54,11 @@ class Trello:
         """Requests all Board IDs the current user has from Trello API."""
         url = "https://api.trello.com/1/members/me/boards"
         response = trello_requests.get_request(self, url)
-
         if response["status"] == 200:
             for board in response["data"]:
                 self.add_board_id(board["id"])
         else:
             self.board_ids = []
-
         return {
             "status": response["status"],
             "url": url,
