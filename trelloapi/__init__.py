@@ -1,16 +1,15 @@
 """Library initializer."""
-from .apibase import ApiBase
 from .board import Board
 from .utils import trello_requests
 
 
-class Trello(ApiBase):
+class Trello:
     """Trello class definition. It holds and interacts with the Boards."""
 
     def __init__(self, apikey, token):
         """Class constructor. Boards are set when the request is successful."""
-        self._apikey = apikey
-        self._token = token
+        self.apikey = apikey
+        self.token = token
         self.auto_load()
         self.board_ids = []
         self.fetch_board_ids()

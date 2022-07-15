@@ -1,15 +1,14 @@
 """Board class definition. It holds and interacts with the Cards."""
-from .apibase import ApiBase
 from .utils import trello_requests
 
 
-class Board(ApiBase):
+class Board:
     """Board class definition. It holds and interacts with the Cards."""
 
     def __init__(self, trello, board_id):
         """Class constructor."""
-        self._apikey = trello.apikey()
-        self._token = trello.token()
+        self.apikey = trello.apikey
+        self.token = trello.token
         self.board_id = board_id
         self.cards_list = []
         board = self.auto_load()

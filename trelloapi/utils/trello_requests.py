@@ -11,7 +11,7 @@ def get_request(
     data = data or {}
     try:
         headers = {"Accept": "application/json"}
-        param = {"key": trello.apikey(), "token": trello.token()}
+        param = {"key": trello.apikey, "token": trello.token}
         response = httpx.get(url, headers=headers, params={**param, **data})
         response.raise_for_status()
         return {
