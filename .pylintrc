@@ -1,6 +1,6 @@
 [MESSAGES CONTROL]
 
-disable=unused-argument,import-error
+disable=unused-argument,import-error,duplicate-code
 
 init-hook='import sys; sys.path.append(".venv")'
 

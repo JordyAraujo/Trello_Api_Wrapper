@@ -21,3 +21,8 @@ def get_request(
         }
     except httpx.HTTPStatusError as exc:
         return {"status": exc.response.status_code, "url": url, "data": []}
+
+
+def was_successful(response):
+    """Check if the response was successful."""
+    return len(response) != 0 and response["status"] == 200

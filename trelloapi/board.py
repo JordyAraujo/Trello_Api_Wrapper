@@ -7,20 +7,50 @@ class Board:
 
     def __init__(self, trello, board_id):
         """Class constructor."""
-        self.apikey = trello.apikey
-        self.token = trello.token
-        self.board_id = board_id
+        self.__apikey = trello.apikey
+        self.__token = trello.token
+        self.__board_id = board_id
         board = self.auto_load()
-        self.name = board["name"]
-        self.url = board["url"]
-        self.list_ids = []
+        self.__name = board["name"]
+        self.__url = board["url"]
+        self.__list_ids = []
         self.fetch_list_ids()
+
+    @property
+    def apikey(self):
+        """Getter for __apikey"""
+        return self.__apikey
+
+    @property
+    def token(self):
+        """Getter for __token"""
+        return self.__token
+
+    @property
+    def board_id(self):
+        """Getter for __board_id"""
+        return self.__board_id
+
+    @property
+    def name(self):
+        """Getter for __name"""
+        return self.__name
+
+    @property
+    def url(self):
+        """Getter for __url"""
+        return self.__url
+
+    @property
+    def list_ids(self):
+        """Getter for __list_ids"""
+        return self.__list_ids
 
     def auto_load(self):
         """Loads board information."""
         url = f"https://api.trello.com/1/boards/{self.board_id}"
         response = trello_requests.get_request(self, url)
-        if len(response) != 0 and response["status"] == 200:
+        if trello_requests.was_successful(response):
             board = {
                 "id": response["data"]["id"],
                 "name": response["data"]["name"],
@@ -31,10 +61,14 @@ class Board:
         return board
 
     def has_list(self, list_id):
-        """Check if the List exists for Board."""
+        """Check if the List exists on the Board."""
+        has_it = False
         url = f"https://api.trello.com/1/lists/{list_id}"
         response = trello_requests.get_request(self, url)
-        return response["status"] == 200
+        if trello_requests.was_successful(response):
+            if response["data"]["idBoard"] == self.board_id:
+                has_it = True
+        return has_it
 
     def add_list_id(self, list_id):
         """Add a new List ID to the list."""
@@ -54,7 +88,7 @@ class Board:
             for trello_list in response["data"]:
                 self.add_list_id(trello_list["id"])
         else:
-            self.list_ids = []
+            self.__list_ids = []
         return {
             "status": response["status"],
             "url": url,

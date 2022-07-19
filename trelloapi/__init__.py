@@ -8,17 +8,32 @@ class Trello:
 
     def __init__(self, apikey, token):
         """Class constructor. Boards are set when the request is successful."""
-        self.apikey = apikey
-        self.token = token
+        self.__apikey = apikey
+        self.__token = token
         self.auto_load()
-        self.board_ids = []
+        self.__board_ids = []
         self.fetch_board_ids()
+
+    @property
+    def apikey(self):
+        """Getter for __apikey"""
+        return self.__apikey
+
+    @property
+    def token(self):
+        """Getter for __token"""
+        return self.__token
+
+    @property
+    def board_ids(self):
+        """Getter for __board_ids"""
+        return self.__board_ids
 
     def auto_load(self):
         """Load all user data."""
         url = "https://api.trello.com/1/members/me"
         response = trello_requests.get_request(self, url)
-        if response["status"] == 200:
+        if trello_requests.was_successful(response):
             self.user = {
                 "id": response["data"]["id"],
                 "fullName": response["data"]["fullName"],
@@ -54,11 +69,11 @@ class Trello:
         """Requests all Board IDs the current user has from Trello API."""
         url = "https://api.trello.com/1/members/me/boards"
         response = trello_requests.get_request(self, url)
-        if response["status"] == 200:
+        if trello_requests.was_successful(response):
             for board in response["data"]:
                 self.add_board_id(board["id"])
         else:
-            self.board_ids = []
+            self.__board_ids = []
         return {
             "status": response["status"],
             "url": url,
