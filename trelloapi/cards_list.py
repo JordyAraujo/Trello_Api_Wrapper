@@ -1,28 +1,18 @@
 """List class definition. It holds and interacts with the Cards."""
+from .base_class import BaseClass
 from .utils import trello_requests
 
 
-class CardsList:
+class CardsList(BaseClass):
     """List class definition. It holds and interacts with the Cards."""
 
     def __init__(self, trello, list_id):
         """Class constructor."""
-        self.__apikey = trello.apikey
-        self.__token = trello.token
+        super().__init__(trello.apikey, trello.token)
         self.__list_id = list_id
         temp_list = self.auto_load()
         self.__name = temp_list["name"]
         self.__closed = temp_list["closed"]
-
-    @property
-    def apikey(self):
-        """Getter for __apikey"""
-        return self.__apikey
-
-    @property
-    def token(self):
-        """Getter for __token"""
-        return self.__token
 
     @property
     def list_id(self):
