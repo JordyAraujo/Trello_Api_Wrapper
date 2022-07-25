@@ -10,33 +10,38 @@ class User(BaseClass):
 
     def __init__(self, apikey: str, token: str) -> None:
         super().__init__(apikey, token)
-        self.fetch_data()
+        user = self.fetch_data()
+        self.__full_name = user["full_name"]
+        self.__username = user["username"]
         self.__board_ids = []
         self.fetch_board_ids()
 
     @property
+    def full_name(self) -> str:
+        return self.__full_name
+
+    @property
+    def username(self) -> str:
+        return self.__username
+
+    @property
     def board_ids(self) -> List[str]:
+        self.fetch_board_ids()
         return self.__board_ids
 
-    def fetch_data(self) -> Dict[str, str]:
+    def fetch_data(self) -> None:
         """Load all User data."""
+        self.fetch_board_ids()
         url = "https://api.trello.com/1/members/me"
         response = trello_requests.get_request(self, url)
         if trello_requests.was_successful(response):
-            self.user = {
-                "id": response["data"]["id"],
-                "fullName": response["data"]["fullName"],
-                "url": response["data"]["url"],
+            user = {
+                "full_name": response["data"]["fullName"],
                 "username": response["data"]["username"],
             }
         else:
-            self.user = {
-                "id": None,
-                "fullName": None,
-                "url": None,
-                "username": None,
-            }
-        return self.user
+            user = {"full_name": None, "username": None}
+        return user
 
     def has_board(self, board_id: str) -> bool:
         """Check if the Board exists for User."""
@@ -75,4 +80,4 @@ class User(BaseClass):
 
     def __str__(self) -> str:
         """Print current User by Username and Name."""
-        return f'{self.user["username"]} - {self.user["fullName"]}'
+        return f"{self.full_name} - {self.username}"

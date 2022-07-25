@@ -13,7 +13,7 @@ class Board(BaseClass):
         self.__board_id = board_id
         board = self.fetch_data()
         self.__name = board["name"]
-        self.__url = board["url"]
+        self.__closed = board["closed"]
         self.__list_ids = []
         self.fetch_list_ids()
 
@@ -26,8 +26,8 @@ class Board(BaseClass):
         return self.__name
 
     @property
-    def url(self) -> str:
-        return self.__url
+    def closed(self) -> str:
+        return self.__closed
 
     @property
     def list_ids(self) -> List[str]:
@@ -39,13 +39,11 @@ class Board(BaseClass):
         response = trello_requests.get_request(self, url)
         if trello_requests.was_successful(response):
             board = {
-                "id": response["data"]["id"],
                 "name": response["data"]["name"],
-                "url": response["data"]["url"],
                 "closed": response["data"]["closed"],
             }
         else:
-            board = {"id": None, "name": None, "url": None, "closed": None}
+            board = {"name": None, "closed": None}
         return board
 
     def has_list(self, list_id: str) -> bool:
@@ -88,5 +86,5 @@ class Board(BaseClass):
         return CardsList(self, list_id) if self.has_list(list_id) else None
 
     def __str__(self) -> str:
-        """Print Board by ID, Name and URL."""
-        return f"{self.board_id} - {self.name} - {self.url}"
+        """Print Board by ID, and Name."""
+        return f"{self.board_id} - {self.name}"
