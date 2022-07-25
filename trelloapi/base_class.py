@@ -2,19 +2,14 @@
 
 
 class BaseClass:
-    """Base Class for all trello based objects."""
-
-    def __init__(self, apikey, token):
-        """Class constructor."""
+    def __init__(self, apikey: str, token: str) -> None:
         self.__apikey = apikey
         self.__token = token
 
     @property
-    def apikey(self):
-        """Getter for __apikey"""
+    def apikey(self) -> str:
         return self.__apikey
 
     @property
-    def token(self):
-        """Getter for __token"""
+    def token(self) -> str:
         return self.__token

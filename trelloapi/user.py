@@ -1,4 +1,5 @@
-"""User class definition. It holds and interacts with the Boards."""
+from typing import Dict, List, Type
+
 from .base_class import BaseClass
 from .board import Board
 from .utils import trello_requests
@@ -7,19 +8,17 @@ from .utils import trello_requests
 class User(BaseClass):
     """User class definition. It holds and interacts with the Boards."""
 
-    def __init__(self, apikey, token):
-        """Class constructor. Boards are set when the request is successful."""
+    def __init__(self, apikey: str, token: str) -> None:
         super().__init__(apikey, token)
-        self.auto_load()
+        self.fetch_data()
         self.__board_ids = []
         self.fetch_board_ids()
 
     @property
-    def board_ids(self):
-        """Getter for __board_ids"""
+    def board_ids(self) -> List[str]:
         return self.__board_ids
 
-    def auto_load(self):
+    def fetch_data(self) -> Dict[str, str]:
         """Load all User data."""
         url = "https://api.trello.com/1/members/me"
         response = trello_requests.get_request(self, url)
@@ -39,13 +38,13 @@ class User(BaseClass):
             }
         return self.user
 
-    def has_board(self, board_id):
+    def has_board(self, board_id: str) -> bool:
         """Check if the Board exists for User."""
         url = f"https://api.trello.com/1/boards/{board_id}"
         response = trello_requests.get_request(self, url)
         return response["status"] == 200
 
-    def add_board_id(self, board_id):
+    def add_board_id(self, board_id: str) -> List[str]:
         """Add a new Board ID to the list."""
         if self.has_board(board_id):
             if len(self.board_ids) == 0:
@@ -55,7 +54,7 @@ class User(BaseClass):
                     self.board_ids.append(board_id)
         return self.board_ids
 
-    def fetch_board_ids(self):
+    def fetch_board_ids(self) -> Dict[str, str]:
         """Requests all Board IDs the current User has from Trello API."""
         url = "https://api.trello.com/1/members/me/boards"
         response = trello_requests.get_request(self, url)
@@ -70,10 +69,10 @@ class User(BaseClass):
             "data": self.board_ids,
         }
 
-    def board(self, board_id):
+    def board(self, board_id: str) -> Type[Board]:
         """Get by ID a new instance of a Board the User has."""
         return Board(self, board_id) if self.has_board(board_id) else None
 
-    def __str__(self):
-        """Print current User by name."""
+    def __str__(self) -> str:
+        """Print current User by Username and Name."""
         return f'{self.user["username"]} - {self.user["fullName"]}'

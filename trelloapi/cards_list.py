@@ -1,4 +1,5 @@
-"""List class definition. It holds and interacts with the Cards."""
+from typing import Dict, Type
+
 from .base_class import BaseClass
 from .utils import trello_requests
 
@@ -6,31 +7,27 @@ from .utils import trello_requests
 class CardsList(BaseClass):
     """List class definition. It holds and interacts with the Cards."""
 
-    def __init__(self, trello, list_id):
-        """Class constructor."""
+    def __init__(self, trello: Type[BaseClass], list_id: str) -> None:
         super().__init__(trello.apikey, trello.token)
         self.__list_id = list_id
-        temp_list = self.auto_load()
+        temp_list = self.fetch_data()
         self.__name = temp_list["name"]
         self.__closed = temp_list["closed"]
 
     @property
-    def list_id(self):
-        """Getter for __list_id"""
+    def list_id(self) -> str:
         return self.__list_id
 
     @property
-    def name(self):
-        """Getter for __name"""
+    def name(self) -> str:
         return self.__name
 
     @property
-    def closed(self):
-        """Getter for __closed"""
+    def closed(self) -> str:
         return self.__closed
 
-    def auto_load(self):
-        """Loads list information."""
+    def fetch_data(self) -> Dict[str, str]:
+        """Loads CardsList information."""
         url = f"https://api.trello.com/1/lists/{self.list_id}"
         response = trello_requests.get_request(self, url)
         if trello_requests.was_successful(response):
@@ -43,12 +40,12 @@ class CardsList(BaseClass):
             card_list = {"id": None, "name": None, "closed": None}
         return card_list
 
-    # def has_card(self, card_id):
+    # def has_card(self, card_id: str) -> bool:
     #     """Check if the Card exists on the List."""
     #     url = f"https://api.trello.com/1/lists/{card_id}"
     #     response = trello_requests.get_request(self, url)
     #     return response["status"] == 200
 
-    def __str__(self):
-        """Print List by ID and name."""
-        return f"{self.list_id} - {self.name}"
+    def __str__(self) -> str:
+        """Print List by ID, Name and if it's Closed."""
+        return f"{self.list_id} - {self.name} - {self.closed}"

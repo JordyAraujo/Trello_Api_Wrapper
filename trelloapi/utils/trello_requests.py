@@ -1,12 +1,16 @@
 """Useful request shortcuts."""
+from typing import Dict, Type
+
 import httpx
+
+from ..base_class import BaseClass
 
 
 def get_request(
-    trello,
-    url,
-    data=None,
-):
+    trello: Type[BaseClass],
+    url: str,
+    data: Dict[str, str] = None,
+) -> Dict[str, str]:
     """Get request with a scent of Trello."""
     data = data or {}
     try:
@@ -23,6 +27,6 @@ def get_request(
         return {"status": exc.response.status_code, "url": url, "data": []}
 
 
-def was_successful(response):
+def was_successful(response: httpx.Response) -> bool:
     """Check if the response was successful."""
     return len(response) != 0 and response["status"] == 200
