@@ -10,11 +10,11 @@ class User(BaseClass):
 
     def __init__(self, apikey: str, token: str) -> None:
         super().__init__(apikey, token)
+        self.__board_ids = []
+        self.fetch_board_ids()
         user = self.fetch_data()
         self.__full_name = user["full_name"]
         self.__username = user["username"]
-        self.__board_ids = []
-        self.fetch_board_ids()
 
     @property
     def full_name(self) -> str:
@@ -26,7 +26,6 @@ class User(BaseClass):
 
     @property
     def board_ids(self) -> List[str]:
-        self.fetch_board_ids()
         return self.__board_ids
 
     def fetch_data(self) -> None:
