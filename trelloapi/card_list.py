@@ -21,12 +21,11 @@ class CardList(BaseClass):
         response = get_request(self, url)
         if was_successful(response):
             card_list = {
-                "id": response["data"]["id"],
                 "name": response["data"]["name"],
                 "closed": response["data"]["closed"],
             }
         else:
-            card_list = {"id": None, "name": None, "closed": None}
+            card_list = {"name": None, "closed": None}
         return card_list
 
     def __str__(self) -> str:

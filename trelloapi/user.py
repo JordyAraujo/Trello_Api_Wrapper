@@ -12,7 +12,6 @@ class User(BaseClass):
     def __init__(self, apikey: str, token: str) -> None:
         super().__init__(apikey, token)
         self.__boards = []
-        self.fetch_boards()
         user = self.fetch_data()
         self.id = user["id"]
         self.__full_name = user["full_name"]
