@@ -10,7 +10,7 @@ class Board(BaseClass):
 
     def __init__(self, trello: Type[BaseClass], board_id: str) -> None:
         super().__init__(trello.apikey, trello.token)
-        self.__board_id = board_id
+        self.id = board_id
         board = self.fetch_data()
         self.name = board["name"]
         self.closed = board["closed"]
@@ -18,16 +18,12 @@ class Board(BaseClass):
         self.fetch_lists()
 
     @property
-    def board_id(self) -> str:
-        return self.__board_id
-
-    @property
     def lists(self) -> List[str]:
         return self.__lists
 
     def fetch_data(self) -> Dict[str, str]:
         """Loads board information."""
-        url = f"https://api.trello.com/1/boards/{self.board_id}"
+        url = f"https://api.trello.com/1/boards/{self.id}"
         response = trello_requests.get_request(self, url)
         if trello_requests.was_successful(response):
             board = {
@@ -44,7 +40,7 @@ class Board(BaseClass):
         url = f"https://api.trello.com/1/lists/{list_id}"
         response = trello_requests.get_request(self, url)
         if trello_requests.was_successful(response):
-            if response["data"]["idBoard"] == self.board_id:
+            if response["data"]["idBoard"] == self.id:
                 has_it = True
         return has_it
 
@@ -67,7 +63,7 @@ class Board(BaseClass):
 
     def fetch_lists(self) -> Dict[str, str]:
         """Requests all List the current Board has from Trello API."""
-        url = f"https://api.trello.com/1/boards/{self.board_id}/lists"
+        url = f"https://api.trello.com/1/boards/{self.id}/lists"
         response = trello_requests.get_request(self, url)
         if response["status"] == 200:
             for trello_list in response["data"]:
@@ -86,4 +82,4 @@ class Board(BaseClass):
 
     def __str__(self) -> str:
         """Print Board by ID, and Name."""
-        return f"{self.board_id} - {self.name}"
+        return f"{self.id} - {self.name} - {self.closed}"
