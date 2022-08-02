@@ -1,7 +1,7 @@
 from typing import Dict, List, Type
 
 from .base_class import BaseClass
-from .cards_list import CardsList
+from .card_list import CardList
 from .utils import trello_requests
 
 
@@ -12,22 +12,14 @@ class Board(BaseClass):
         super().__init__(trello.apikey, trello.token)
         self.__board_id = board_id
         board = self.fetch_data()
-        self.__name = board["name"]
-        self.__closed = board["closed"]
+        self.name = board["name"]
+        self.closed = board["closed"]
         self.__list_ids = []
         self.fetch_list_ids()
 
     @property
     def board_id(self) -> str:
         return self.__board_id
-
-    @property
-    def name(self) -> str:
-        return self.__name
-
-    @property
-    def closed(self) -> str:
-        return self.__closed
 
     @property
     def list_ids(self) -> List[str]:
@@ -81,9 +73,9 @@ class Board(BaseClass):
             "data": self.list_ids,
         }
 
-    def cards_list(self, list_id: str) -> Type[CardsList]:
-        """Get by ID a new instance of a CardsList the Board has."""
-        return CardsList(self, list_id) if self.has_list(list_id) else None
+    def card_list(self, list_id: str) -> Type[CardList]:
+        """Get by ID a new instance of a CardList the Board has."""
+        return CardList(self, list_id) if self.has_list(list_id) else None
 
     def __str__(self) -> str:
         """Print Board by ID, and Name."""

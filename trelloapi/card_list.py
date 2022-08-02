@@ -4,30 +4,22 @@ from .base_class import BaseClass
 from .utils import trello_requests
 
 
-class CardsList(BaseClass):
+class CardList(BaseClass):
     """List class definition. It holds and interacts with the Cards."""
 
     def __init__(self, trello: Type[BaseClass], list_id: str) -> None:
         super().__init__(trello.apikey, trello.token)
         self.__list_id = list_id
         temp_list = self.fetch_data()
-        self.__name = temp_list["name"]
-        self.__closed = temp_list["closed"]
+        self.name = temp_list["name"]
+        self.closed = temp_list["closed"]
 
     @property
     def list_id(self) -> str:
         return self.__list_id
 
-    @property
-    def name(self) -> str:
-        return self.__name
-
-    @property
-    def closed(self) -> str:
-        return self.__closed
-
     def fetch_data(self) -> Dict[str, str]:
-        """Loads CardsList information."""
+        """Loads CardList information."""
         url = f"https://api.trello.com/1/lists/{self.list_id}"
         response = trello_requests.get_request(self, url)
         if trello_requests.was_successful(response):
