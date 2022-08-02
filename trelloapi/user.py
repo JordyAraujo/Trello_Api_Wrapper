@@ -3,7 +3,7 @@ from typing import Dict, List, Type
 
 from .base_class import BaseClass
 from .board import Board
-from .utils import trello_requests
+from .trello_requests import get_request, was_successful
 
 
 class User(BaseClass):
@@ -34,8 +34,8 @@ class User(BaseClass):
         """Load all User data."""
         self.fetch_boards()
         url = "https://api.trello.com/1/members/me"
-        response = trello_requests.get_request(self, url)
-        if trello_requests.was_successful(response):
+        response = get_request(self, url)
+        if was_successful(response):
             user = {
                 "id": response["data"]["id"],
                 "full_name": response["data"]["fullName"],
@@ -48,7 +48,7 @@ class User(BaseClass):
     def has_board(self, board_id: str) -> bool:
         """Check if the Board exists for User."""
         url = f"https://api.trello.com/1/boards/{board_id}"
-        response = trello_requests.get_request(self, url)
+        response = get_request(self, url)
         return response["status"] == 200
 
     def add_board(self, board: Dict[str, str]) -> List[str]:
@@ -71,8 +71,8 @@ class User(BaseClass):
     def fetch_boards(self) -> Dict[str, str]:
         """Requests all Board IDs the current User has from Trello API."""
         url = "https://api.trello.com/1/members/me/boards"
-        response = trello_requests.get_request(self, url)
-        if trello_requests.was_successful(response):
+        response = get_request(self, url)
+        if was_successful(response):
             for board in response["data"]:
                 self.add_board(board)
         else:

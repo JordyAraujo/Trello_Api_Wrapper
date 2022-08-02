@@ -3,7 +3,7 @@ from typing import Dict, List, Type
 
 from .base_class import BaseClass
 from .card_list import CardList
-from .utils import trello_requests
+from .trello_requests import get_request, was_successful
 
 
 class Board(BaseClass):
@@ -25,8 +25,8 @@ class Board(BaseClass):
     def fetch_data(self) -> Dict[str, str]:
         """Loads board information."""
         url = f"https://api.trello.com/1/boards/{self.id}"
-        response = trello_requests.get_request(self, url)
-        if trello_requests.was_successful(response):
+        response = get_request(self, url)
+        if was_successful(response):
             board = {
                 "name": response["data"]["name"],
                 "closed": response["data"]["closed"],
@@ -39,8 +39,8 @@ class Board(BaseClass):
         """Check if the List exists on the Board."""
         has_it = False
         url = f"https://api.trello.com/1/lists/{list_id}"
-        response = trello_requests.get_request(self, url)
-        if trello_requests.was_successful(response):
+        response = get_request(self, url)
+        if was_successful(response):
             if response["data"]["idBoard"] == self.id:
                 has_it = True
         return has_it
@@ -65,7 +65,7 @@ class Board(BaseClass):
     def fetch_lists(self) -> Dict[str, str]:
         """Requests all List the current Board has from Trello API."""
         url = f"https://api.trello.com/1/boards/{self.id}/lists"
-        response = trello_requests.get_request(self, url)
+        response = get_request(self, url)
         if response["status"] == 200:
             for trello_list in response["data"]:
                 self.add_list(trello_list)

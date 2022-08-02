@@ -2,7 +2,7 @@ import json
 from typing import Dict, Type
 
 from .base_class import BaseClass
-from .utils import trello_requests
+from .trello_requests import get_request, was_successful
 
 
 class CardList(BaseClass):
@@ -18,8 +18,8 @@ class CardList(BaseClass):
     def fetch_data(self) -> Dict[str, str]:
         """Loads CardList information."""
         url = f"https://api.trello.com/1/lists/{self.id}"
-        response = trello_requests.get_request(self, url)
-        if trello_requests.was_successful(response):
+        response = get_request(self, url)
+        if was_successful(response):
             card_list = {
                 "id": response["data"]["id"],
                 "name": response["data"]["name"],
