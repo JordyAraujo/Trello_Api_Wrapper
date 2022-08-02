@@ -9,18 +9,14 @@ class CardList(BaseClass):
 
     def __init__(self, trello: Type[BaseClass], list_id: str) -> None:
         super().__init__(trello.apikey, trello.token)
-        self.__list_id = list_id
+        self.id = list_id
         temp_list = self.fetch_data()
         self.name = temp_list["name"]
         self.closed = temp_list["closed"]
 
-    @property
-    def list_id(self) -> str:
-        return self.__list_id
-
     def fetch_data(self) -> Dict[str, str]:
         """Loads CardList information."""
-        url = f"https://api.trello.com/1/lists/{self.list_id}"
+        url = f"https://api.trello.com/1/lists/{self.id}"
         response = trello_requests.get_request(self, url)
         if trello_requests.was_successful(response):
             card_list = {
@@ -40,4 +36,4 @@ class CardList(BaseClass):
 
     def __str__(self) -> str:
         """Print List by ID, Name and if it's Closed."""
-        return f"{self.list_id} - {self.name} - {self.closed}"
+        return f"{self.id} - {self.name} - {self.closed}"

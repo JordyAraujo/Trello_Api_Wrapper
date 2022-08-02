@@ -5,6 +5,7 @@ class BaseClass:
     def __init__(self, apikey: str, token: str) -> None:
         self.__apikey = apikey
         self.__token = token
+        self.__id = None
         self.__name = "BaseClass"
         self.__closed = False
 
@@ -15,6 +16,14 @@ class BaseClass:
     @property
     def token(self) -> str:
         return self.__token
+
+    @property
+    def id(self) -> str:
+        return self.__id
+
+    @id.setter
+    def id(self, new_id: str) -> None:
+        self.__id = new_id
 
     @property
     def name(self) -> str:

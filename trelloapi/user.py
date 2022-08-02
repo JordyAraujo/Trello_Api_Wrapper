@@ -13,6 +13,7 @@ class User(BaseClass):
         self.__boards = []
         self.fetch_boards()
         user = self.fetch_data()
+        self.id = user["id"]
         self.__full_name = user["full_name"]
         self.__username = user["username"]
 
@@ -35,11 +36,12 @@ class User(BaseClass):
         response = trello_requests.get_request(self, url)
         if trello_requests.was_successful(response):
             user = {
+                "id": response["data"]["id"],
                 "full_name": response["data"]["fullName"],
                 "username": response["data"]["username"],
             }
         else:
-            user = {"full_name": None, "username": None}
+            user = {"id": None, "full_name": None, "username": None}
         return user
 
     def has_board(self, board_id: str) -> bool:
@@ -85,5 +87,5 @@ class User(BaseClass):
         return Board(self, board_id) if self.has_board(board_id) else None
 
     def __str__(self) -> str:
-        """Print current User by Username and Name."""
-        return f"{self.full_name} - {self.username}"
+        """Print current User by ID, Username and Name."""
+        return f"{self.id} - {self.full_name} - {self.username}"
