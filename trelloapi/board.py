@@ -1,3 +1,4 @@
+import json
 from typing import Dict, List, Type
 
 from .base_class import BaseClass
@@ -81,5 +82,10 @@ class Board(BaseClass):
         return CardList(self, list_id) if self.has_list(list_id) else None
 
     def __str__(self) -> str:
-        """Print Board by ID, and Name."""
-        return f"{self.id} - {self.name} - {self.closed}"
+        board = {
+            "id": self.id,
+            "name": self.name,
+            "closed": self.closed,
+            "lists": self.lists,
+        }
+        return json.dumps(board)
