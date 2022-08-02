@@ -1,3 +1,4 @@
+import json
 from typing import Dict, List, Type
 
 from .base_class import BaseClass
@@ -87,5 +88,9 @@ class User(BaseClass):
         return Board(self, board_id) if self.has_board(board_id) else None
 
     def __str__(self) -> str:
-        """Print current User by ID, Username and Name."""
-        return f"{self.id} - {self.full_name} - {self.username}"
+        user = {
+            "username": self.username,
+            "full_name": self.full_name,
+            "boards": self.boards,
+        }
+        return json.dumps(user)

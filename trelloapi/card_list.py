@@ -1,3 +1,4 @@
+import json
 from typing import Dict, Type
 
 from .base_class import BaseClass
@@ -28,12 +29,6 @@ class CardList(BaseClass):
             card_list = {"id": None, "name": None, "closed": None}
         return card_list
 
-    # def has_card(self, card_id: str) -> bool:
-    #     """Check if the Card exists on the List."""
-    #     url = f"https://api.trello.com/1/lists/{card_id}"
-    #     response = trello_requests.get_request(self, url)
-    #     return response["status"] == 200
-
     def __str__(self) -> str:
-        """Print List by ID, Name and if it's Closed."""
-        return f"{self.id} - {self.name} - {self.closed}"
+        card_list = {"id": self.id, "name": self.name, "closed": self.closed}
+        return json.dumps(card_list)
