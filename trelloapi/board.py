@@ -14,16 +14,16 @@ class Board(BaseClass):
         board = self.fetch_data()
         self.name = board["name"]
         self.closed = board["closed"]
-        self.__list_ids = []
-        self.fetch_list_ids()
+        self.__lists = []
+        self.fetch_lists()
 
     @property
     def board_id(self) -> str:
         return self.__board_id
 
     @property
-    def list_ids(self) -> List[str]:
-        return self.__list_ids
+    def lists(self) -> List[str]:
+        return self.__lists
 
     def fetch_data(self) -> Dict[str, str]:
         """Loads board information."""
@@ -48,29 +48,36 @@ class Board(BaseClass):
                 has_it = True
         return has_it
 
-    def add_list_id(self, list_id: str) -> List[str]:
-        """Add a new List ID to the Board."""
-        if self.has_list(list_id):
-            if len(self.list_ids) == 0:
-                self.list_ids.append(list_id)
-            else:
-                if list_id not in self.list_ids:
-                    self.list_ids.append(list_id)
-        return self.list_ids
+    def add_list(self, list_to_add: Dict[str, str]) -> List[str]:
+        """Add a new List to the Board."""
+        should_add = True
+        if len(self.lists) != 0 and self.has_list(list_to_add["id"]):
+            for stored_list in self.lists:
+                if stored_list["id"] == list_to_add["id"]:
+                    should_add = False
+        if should_add:
+            self.lists.append(
+                {
+                    "id": list_to_add["id"],
+                    "name": list_to_add["name"],
+                    "closed": list_to_add["closed"],
+                }
+            )
+        return self.lists
 
-    def fetch_list_ids(self) -> Dict[str, str]:
-        """Requests all List IDs the current Board has from Trello API."""
+    def fetch_lists(self) -> Dict[str, str]:
+        """Requests all List the current Board has from Trello API."""
         url = f"https://api.trello.com/1/boards/{self.board_id}/lists"
         response = trello_requests.get_request(self, url)
         if response["status"] == 200:
             for trello_list in response["data"]:
-                self.add_list_id(trello_list["id"])
+                self.add_list(trello_list)
         else:
-            self.__list_ids = []
+            self.__lists = []
         return {
             "status": response["status"],
             "url": url,
-            "data": self.list_ids,
+            "data": self.lists,
         }
 
     def card_list(self, list_id: str) -> Type[CardList]:

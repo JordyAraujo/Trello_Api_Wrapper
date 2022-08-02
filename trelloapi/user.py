@@ -10,8 +10,8 @@ class User(BaseClass):
 
     def __init__(self, apikey: str, token: str) -> None:
         super().__init__(apikey, token)
-        self.__board_ids = []
-        self.fetch_board_ids()
+        self.__boards = []
+        self.fetch_boards()
         user = self.fetch_data()
         self.__full_name = user["full_name"]
         self.__username = user["username"]
@@ -25,12 +25,12 @@ class User(BaseClass):
         return self.__username
 
     @property
-    def board_ids(self) -> List[str]:
-        return self.__board_ids
+    def boards(self) -> List[str]:
+        return self.__boards
 
     def fetch_data(self) -> None:
         """Load all User data."""
-        self.fetch_board_ids()
+        self.fetch_boards()
         url = "https://api.trello.com/1/members/me"
         response = trello_requests.get_request(self, url)
         if trello_requests.was_successful(response):
@@ -48,29 +48,36 @@ class User(BaseClass):
         response = trello_requests.get_request(self, url)
         return response["status"] == 200
 
-    def add_board_id(self, board_id: str) -> List[str]:
-        """Add a new Board ID to the list."""
-        if self.has_board(board_id):
-            if len(self.board_ids) == 0:
-                self.board_ids.append(board_id)
-            else:
-                if board_id not in self.board_ids:
-                    self.board_ids.append(board_id)
-        return self.board_ids
+    def add_board(self, board: Dict[str, str]) -> List[str]:
+        """Add a new Board to the list."""
+        should_add = True
+        if len(self.boards) != 0 and self.has_board(board["id"]):
+            for stored_board in self.boards:
+                if stored_board["id"] == board["id"]:
+                    should_add = False
+        if should_add:
+            self.boards.append(
+                {
+                    "id": board["id"],
+                    "name": board["name"],
+                    "closed": board["closed"],
+                }
+            )
+        return self.boards
 
-    def fetch_board_ids(self) -> Dict[str, str]:
+    def fetch_boards(self) -> Dict[str, str]:
         """Requests all Board IDs the current User has from Trello API."""
         url = "https://api.trello.com/1/members/me/boards"
         response = trello_requests.get_request(self, url)
         if trello_requests.was_successful(response):
             for board in response["data"]:
-                self.add_board_id(board["id"])
+                self.add_board(board)
         else:
-            self.__board_ids = []
+            self.__boards = []
         return {
             "status": response["status"],
             "url": url,
-            "data": self.board_ids,
+            "data": self.boards,
         }
 
     def board(self, board_id: str) -> Type[Board]:
