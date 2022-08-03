@@ -47,7 +47,7 @@ def add_list(board, list_to_add: Dict[str, str]) -> List[str]:
 
 
 def fetch_lists(board) -> Dict[str, str]:
-    """Requests all List the current Board has from Trello API."""
+    """Requests all Lists the current Board has from Trello API."""
     url = f"https://api.trello.com/1/boards/{board.id}/lists"
     response = get_request(board, url)
     lists = []
