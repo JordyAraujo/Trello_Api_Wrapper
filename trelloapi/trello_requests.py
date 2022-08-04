@@ -3,7 +3,7 @@ from typing import Dict, Type
 
 import httpx
 
-from ..base_class import BaseClass
+from .base_class import BaseClass
 
 
 def get_request(
