@@ -2,9 +2,8 @@ import json
 from typing import List, Type
 
 from ..base_class import BaseClass
-from .functions import fetch_cards, fetch_data
-
-# from ..card import Card
+from ..card import Card
+from .functions import fetch_cards, fetch_data, has_card
 
 
 class CardList(BaseClass):
@@ -23,9 +22,9 @@ class CardList(BaseClass):
     def cards(self) -> List[str]:
         return self.__cards
 
-    # def card(self, card_id: str) -> Type[Card]:
-    #     """Get by ID a new instance of a Card the CardList has."""
-    #     return Card(self, card_id) if has_card(self, card_id) else None
+    def card(self, card_id: str) -> Type[Card]:
+        """Get by ID a new instance of a Card the CardList has."""
+        return Card(self, card_id) if has_card(self, card_id) else None
 
     def __str__(self) -> str:
         card_list = {

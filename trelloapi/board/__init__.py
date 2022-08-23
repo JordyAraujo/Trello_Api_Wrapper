@@ -12,15 +12,18 @@ class Board(BaseClass):
     def __init__(self, trello: Type[BaseClass], board_id: str) -> None:
         super().__init__(trello.apikey, trello.token)
         self.id = board_id
-        board = fetch_data(self)
-        self.name = board["name"]
-        self.closed = board["closed"]
         self.__lists = []
-        self.__lists = fetch_lists(self)
+        self.update()
 
     @property
     def lists(self) -> List[str]:
         return self.__lists
+
+    def update(self) -> None:
+        board = fetch_data(self)
+        self.name = board["name"]
+        self.closed = board["closed"]
+        self.__lists = fetch_lists(self)
 
     def card_list(self, list_id: str) -> Type[CardList]:
         """Get by ID a new instance of a CardList the Board has."""

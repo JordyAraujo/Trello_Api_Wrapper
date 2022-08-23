@@ -1,4 +1,5 @@
 """Base Class for all trello based objects."""
+import json
 
 
 class BaseClass:
@@ -6,7 +7,7 @@ class BaseClass:
         self.__apikey = apikey
         self.__token = token
         self.__id = None
-        self.__name = "BaseClass"
+        self.__name = "undefined"
         self.__closed = False
 
     @property
@@ -40,3 +41,7 @@ class BaseClass:
     @closed.setter
     def closed(self, new_closed: bool) -> None:
         self.__closed = new_closed
+
+    def __str__(self) -> str:
+        base_class = {"id": self.id, "name": self.name, "closed": self.closed}
+        return json.dumps(base_class)
