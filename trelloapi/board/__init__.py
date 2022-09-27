@@ -2,8 +2,7 @@ import json
 from typing import List, Type
 
 from ..base_class import BaseClass
-from ..card_list import CardList
-from .functions import fetch_data, fetch_lists, has_list
+from .functions import fetch_data, fetch_lists
 
 
 class Board(BaseClass):
@@ -24,10 +23,6 @@ class Board(BaseClass):
         self.name = board["name"]
         self.closed = board["closed"]
         self.__lists = fetch_lists(self)
-
-    def card_list(self, list_id: str) -> Type[CardList]:
-        """Get by ID a new instance of a CardList the Board has."""
-        return CardList(self, list_id) if has_list(self, list_id) else None
 
     def __str__(self) -> str:
         board = {

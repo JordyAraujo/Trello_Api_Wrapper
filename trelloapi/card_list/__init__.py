@@ -1,9 +1,12 @@
 import json
 from typing import List, Type
 
+import requests
+
 from ..base_class import BaseClass
-from ..card import Card
-from .functions import fetch_cards, fetch_data, has_card
+from .functions import fetch_cards, fetch_data
+
+CREATE_CARD_URL = "https://api.trello.com/1/cards"
 
 
 class CardList(BaseClass):
@@ -22,9 +25,20 @@ class CardList(BaseClass):
     def cards(self) -> List[str]:
         return self.__cards
 
-    def card(self, card_id: str) -> Type[Card]:
-        """Get by ID a new instance of a Card the CardList has."""
-        return Card(self, card_id) if has_card(self, card_id) else None
+    def create_card(self, title, description, label_ids):
+        """Create a new Trello card"""
+        params = {
+            "name": title,
+            "desc": description,
+            "pos": "top",
+            "idList": self.id,
+            "key": super().apikey,
+            "token": super().token,
+            "idLabels": label_ids,
+        }
+        response = requests.request("POST", CREATE_CARD_URL, params=params)
+        card_id = response.json()["id"] if response.ok else None
+        return card_id, response.status_code
 
     def __str__(self) -> str:
         card_list = {

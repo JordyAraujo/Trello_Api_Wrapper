@@ -1,9 +1,8 @@
 import json
-from typing import List, Type
+from typing import List
 
 from ..base_class import BaseClass
-from ..board import Board
-from .functions import fetch_boards, fetch_data, has_board
+from .functions import fetch_boards, fetch_data
 
 
 class User(BaseClass):
@@ -29,10 +28,6 @@ class User(BaseClass):
     @property
     def boards(self) -> List[str]:
         return self.__boards
-
-    def board(self, board_id: str) -> Type[Board]:
-        """Get by ID a new instance of a Board the User has."""
-        return Board(self, board_id) if has_board(self, board_id) else None
 
     def __str__(self) -> str:
         user = {

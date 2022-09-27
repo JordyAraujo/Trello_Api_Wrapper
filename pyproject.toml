@@ -18,7 +18,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "TrelloApi"
-version = "0.0.1"
+version = "0.1.0"
 authors = [
   { name="Jordy Araújo", email="jordyaraujo@outlook.com" },
 ]

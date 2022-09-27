@@ -1,5 +1,6 @@
 from typing import Dict, List
 
+from ..constructors import has_list
 from ..trello_requests import get_request, was_successful
 
 
@@ -15,17 +16,6 @@ def fetch_data(board) -> Dict[str, str]:
     else:
         board = {"name": None, "closed": None}
     return board
-
-
-def has_list(board, list_id: str) -> bool:
-    """Check if the List exists on the Board."""
-    has_it = False
-    url = f"https://api.trello.com/1/lists/{list_id}"
-    response = get_request(board, url)
-    if was_successful(response):
-        if response["data"]["idBoard"] == board.id:
-            has_it = True
-    return has_it
 
 
 def add_list(board, list_to_add: Dict[str, str]) -> List[str]:
